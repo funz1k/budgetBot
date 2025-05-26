@@ -1,4 +1,20 @@
 
+from telegram import Update
+from telegram.ext import ContextTypes
+from bot.handlers import start_expense_input, summary, commit
+
+async def handle_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.lower()
+
+    if "додати" in text or "добавить" in text:
+        return await start_expense_input(update, context)
+    elif "звіт" in text or "сводка" in text:
+        return await summary(update, context)
+    elif "вигрузити" in text or "выгрузить" in text:
+        return await commit(update, context)
+
+
+
 
 from telegram.ext import ConversationHandler, MessageHandler, filters, ContextTypes
 

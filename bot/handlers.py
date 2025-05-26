@@ -1,4 +1,15 @@
 
+
+from telegram import Update
+from telegram.ext import ContextTypes, ConversationHandler
+
+AWAITING_EXPENSE_INPUT = 1
+
+async def start_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Введи витрату у форматі: 120 таксі")
+    return AWAITING_EXPENSE_INPUT
+
+
 from telegram.ext import CommandHandler, ContextTypes, filters, MessageHandler
 from telegram import Update, InputFile
 from core.database import add_to_buffer, get_buffer_summary, conn, cursor
