@@ -2,6 +2,7 @@
 from telegram.ext import ConversationHandler, MessageHandler, filters, ContextTypes
 from telegram import Update
 from core.database import add_to_buffer
+from bot.handlers import summary, report_buffer, export, commit, discard
 
 AWAITING_EXPENSE_INPUT = 1
 
@@ -34,6 +35,22 @@ async def cancel_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Скасовано.")
     return ConversationHandler.END
 
+# Универсальный обработчик текстовых кнопок
+async def handle_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.lower()
+    if "звіт" in text:
+        await summary(update, context)
+    elif "експорт" in text or "выгруз" in text:
+        await export(update, context)
+    elif "буфер" in text:
+        await report_buffer(update, context)
+    elif "зберегти" in text or "commit" in text:
+        await commit(update, context)
+    elif "очистити" in text or "discard" in text:
+        await discard(update, context)
+    elif "скасувати" in text:
+        await cancel_input(update, context)
+
 def setup_conversation(app):
     app.add_handler(
         ConversationHandler(
@@ -44,3 +61,4 @@ def setup_conversation(app):
             fallbacks=[MessageHandler(filters.Regex("(?i)^скасувати$"), cancel_input)],
         )
     )
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text_buttons))
