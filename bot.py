@@ -5,6 +5,17 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+import threading
+import http.server
+import socketserver
+
+def run_fake_webserver():
+    handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", 8080), handler) as httpd:
+        httpd.serve_forever()
+
+threading.Thread(target=run_fake_webserver, daemon=True).start()
+
 TOKEN = os.getenv("BOT_TOKEN")
 
 app = ApplicationBuilder().token(TOKEN).build()
