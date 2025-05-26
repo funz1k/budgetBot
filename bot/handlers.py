@@ -24,7 +24,12 @@ async def summary(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from core.database import get_buffer_summary
     result_main = generate_summary()
     result_buffer = get_buffer_summary()
-    final = "📊 Основна база:
+    final = """📊 Основна база:
+{result_main}
+
+🕒 Буфер (не збережено):
+{result_buffer}
+"""
 " + result_main
     if result_buffer:
         final += "\n\n🕒 Буфер (не збережено):\n" + result_buffer
