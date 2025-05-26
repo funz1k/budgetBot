@@ -6,9 +6,12 @@ from core.database import add_to_buffer
 AWAITING_EXPENSE_INPUT = 1
 
 async def start_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Введи витрату у форматі:
+    await update.message.reply_text(
+        "Введи витрату у форматі:
 *Сума Категорія Опис (необов’язково)*
-Наприклад: `200 Продукти Ашан`", parse_mode="Markdown")
+Наприклад: `200 Продукти Ашан`",
+        parse_mode="Markdown"
+    )
     return AWAITING_EXPENSE_INPUT
 
 async def process_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
