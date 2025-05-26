@@ -7,9 +7,9 @@ AWAITING_EXPENSE_INPUT = 1
 
 async def start_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Введи витрату у форматі:
-*Сума Категорія Опис (необов’язково)*
-Наприклад: `200 Продукти Ашан`",
+        """Введи витрату у форматі:
+Сума Категорія Опис (необов’язково)
+Наприклад: 200 Продукти Ашан""",
         parse_mode="Markdown"
     )
     return AWAITING_EXPENSE_INPUT
@@ -23,7 +23,10 @@ async def process_expense_input(update: Update, context: ContextTypes.DEFAULT_TY
         add_to_buffer(amount, category, description)
         await update.message.reply_text(f"✅ Додано до буфера: {amount} грн | {category} | {description}")
     except:
-        await update.message.reply_text("⚠️ Формат невірний. Спробуй ще раз: `200 Продукти Ашан`", parse_mode="Markdown")
+        await update.message.reply_text(
+            "⚠️ Формат невірний. Спробуй ще раз: 200 Продукти Ашан",
+            parse_mode="Markdown"
+        )
         return AWAITING_EXPENSE_INPUT
     return ConversationHandler.END
 
