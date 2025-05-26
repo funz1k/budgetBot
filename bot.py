@@ -12,4 +12,8 @@ setup_handlers(app)
 setup_conversation(app)
 
 if __name__ == '__main__':
-    app.run_polling()
+    import telegram.error
+    try:
+            app.run_polling()
+    except telegram.error.Conflict:
+        print('[❌] Бот вже запущений в іншому місці (getUpdates conflict)')

@@ -1,12 +1,14 @@
 
-from telegram.ext import CommandHandler, MessageHandler, ContextTypes, filters
-from telegram import Update
+from telegram.ext import CommandHandler, ContextTypes, filters, MessageHandler
+from telegram import Update, InputFile
+from core.database import add_to_buffer, get_buffer_summary, conn, cursor
 from core.logic import generate_summary
-from core.database import add_to_buffer, get_buffer_summary
 from core.export import run_export
+import os
+import shutil
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привіт! Я бот для обліку бюджету. Введи /add <сума> <категорія> <опис>")
+    await update.message.reply_text("Привіт! Я бот для бюджету. Команди: /add /summary /report_buffer /export")
 
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
@@ -33,9 +35,29 @@ async def export(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("⚠️ Експорт не вдався.")
 
+async def commit(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cursor.execute("INSERT INTO expenses (amount, category, description, date) SELECT amount, category, description, date FROM buffer_expenses")
+    cursor.execute("DELETE FROM buffer_expenses")
+    conn.commit()
+    if os.path.exists("data/media_buffer"):
+        os.makedirs("data/media", exist_ok=True)
+        for file in os.listdir("data/media_buffer"):
+            shutil.move(os.path.join("data/media_buffer", file), os.path.join("data/media", file))
+    await update.message.reply_text("✅ Збережено в основну базу.")
+
+async def discard(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cursor.execute("DELETE FROM buffer_expenses")
+    conn.commit()
+    if os.path.exists("data/media_buffer"):
+        for file in os.listdir("data/media_buffer"):
+            os.remove(os.path.join("data/media_buffer", file))
+    await update.message.reply_text("🗑 Буфер очищено.")
+
 def setup_handlers(app):
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("add", add))
     app.add_handler(CommandHandler("summary", summary))
     app.add_handler(CommandHandler("report_buffer", report_buffer))
     app.add_handler(CommandHandler("export", export))
+    app.add_handler(CommandHandler("commit", commit))
+    app.add_handler(CommandHandler("discard", discard))
