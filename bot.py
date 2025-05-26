@@ -1,6 +1,7 @@
 from telegram.ext import ApplicationBuilder
 from bot.handlers import setup_handlers
-from bot.router import setup_conversation
+from bot.router import setup_conversation, handle_text_buttons
+
 import os
 from dotenv import load_dotenv
 
