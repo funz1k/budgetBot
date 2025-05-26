@@ -27,19 +27,6 @@ async def cancel_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Скасовано.")
     return ConversationHandler.END
 
-async def handle_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.lower()
-    if "зберегти" in text:
-        await commit(update, context)
-    elif "очистити" in text:
-        await discard(update, context)
-    elif "буфер" in text:
-        await report_buffer(update, context)
-    elif "експорт" in text or "вигруз" in text:
-        await export(update, context)
-    elif "звіт" in text or "summary" in text:
-        await summary(update, context)
-
 def setup_conversation(app):
     app.add_handler(
         ConversationHandler(
@@ -51,3 +38,12 @@ def setup_conversation(app):
         )
     )
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text_buttons))
+
+async def handle_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.lower()
+    if "додати" in text or "/add" in text:
+        return await start_expense_input(update, context)
+    elif "звіт" in text or "summary" in text or "/summary" in text:
+        return await summary(update, context)
+    elif "вигрузити" in text or "експорт" in text or "/export" in text:
+        return await commit(update, context)
