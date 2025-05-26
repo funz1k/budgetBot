@@ -30,7 +30,7 @@ async def summary(update: Update, context: ContextTypes.DEFAULT_TYPE):
 🕒 Буфер (не збережено):
 {result_buffer}
 """
-" + result_main
+    final = "Основна база:\n" + result_main
     if result_buffer:
         final += "\n\n🕒 Буфер (не збережено):\n" + result_buffer
     await update.message.reply_text(final)
@@ -75,3 +75,18 @@ def setup_handlers(app):
     app.add_handler(CommandHandler("export", export))
     app.add_handler(CommandHandler("commit", commit))
     app.add_handler(CommandHandler("discard", discard))
+
+async def commit(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from core.database import commit_buffer
+    commit_buffer()
+    await update.message.reply_text("💾 Збережено")
+
+async def discard(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from core.database import discard_buffer
+    discard_buffer()
+    await update.message.reply_text("🗑 Буфер очищено")
+
+async def export(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from core.database import export_to_csv
+    path = export_to_csv()
+    await update.message.reply_document(open(path, "rb"))

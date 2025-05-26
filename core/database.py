@@ -35,3 +35,22 @@ def get_buffer_summary():
     if not rows:
         return None
     return "\n".join([f"{cat}: {round(total, 2)} грн" for cat, total in rows])
+
+def commit_buffer():
+    with open("data/main.txt", "a", encoding="utf-8") as f:
+        for item in buffer:
+            f.write(f"{item}\n")
+    buffer.clear()
+
+def discard_buffer():
+    buffer.clear()
+
+def export_to_csv():
+    import csv, os
+    os.makedirs("data", exist_ok=True)
+    with open("data/export.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Amount", "Category", "Description"])
+        for item in buffer:
+            writer.writerow(item)
+    return "data/export.csv"

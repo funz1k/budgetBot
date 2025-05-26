@@ -7,12 +7,7 @@ from bot.handlers import summary, report_buffer, export, commit, discard
 AWAITING_EXPENSE_INPUT = 1
 
 async def start_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "✍ Введи трату у форматі:
-`suma category опис (опційно)`
-Наприклад: `250 Продукти Ашан`",
-        parse_mode="Markdown"
-    )
+    await update.message.reply_text("✍ Введи трату: сума категорія опис. Наприклад: 250 Продукти Ашан")
     return AWAITING_EXPENSE_INPUT
 
 async def process_expense_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
