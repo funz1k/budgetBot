@@ -41,9 +41,9 @@ def setup_conversation(app):
 
 async def handle_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.lower()
-    if "додати" in text or "/add" in text:
+    if 'додати' in text or '/add' in text:
         return await start_expense_input(update, context)
-    elif "звіт" in text or "summary" in text or "/summary" in text:
+    elif 'звіт' in text or '/summary' in text:
         return await summary(update, context)
-    elif "вигрузити" in text or "експорт" in text or "/export" in text:
+    elif 'вигрузити' in text or '/export' in text:
         return await commit(update, context)
